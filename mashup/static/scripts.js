@@ -64,6 +64,7 @@ $(document).ready(function() {
 function addMarker(place)
 {
     // TODO
+    // Ultimately, given a place (i.e., postal code and more), this function will need to add a marker (i.e., icon) to the map.
 }
 
 
@@ -100,6 +101,7 @@ function configure()
                 "<div>" +
                 "TODO" +
                 "</div>"
+                // <div>{{place_name}}, {{admin_name1}}, {{postal_code}}</div>
             )
         }
     });
@@ -122,8 +124,8 @@ function configure()
     // Re-enable ctrl- and right-clicking (and thus Inspect Element) on Google Map
     // https://chrome.google.com/webstore/detail/allow-right-click/hompjdfbfmmmgflfjdlnkohcplmboaeo?hl=en
     document.addEventListener("contextmenu", function(event) {
-        event.returnValue = true; 
-        event.stopPropagation && event.stopPropagation(); 
+        event.returnValue = true;
+        event.stopPropagation && event.stopPropagation();
         event.cancelBubble && event.cancelBubble();
     }, true);
 
@@ -139,6 +141,7 @@ function configure()
 function removeMarkers()
 {
     // TODO
+    // Ultimately, this function will need to remove any and all markers from the map!
 }
 
 
@@ -150,7 +153,7 @@ function search(query, syncResults, asyncResults)
         q: query
     };
     $.getJSON("/search", parameters, function(data, textStatus, jqXHR) {
-     
+
         // Call typeahead's callback with search results (i.e., places)
         asyncResults(data);
     });
@@ -160,6 +163,7 @@ function search(query, syncResults, asyncResults)
 // Show info window at marker with content
 function showInfo(marker, content)
 {
+    // Notice, though, how this function is creating a string of HTML dynamically, thereafter passing it to setContent.
     // Start div
     let div = "<div id='info'>";
     if (typeof(content) == "undefined")
@@ -184,7 +188,7 @@ function showInfo(marker, content)
 
 
 // Update UI's markers
-function update() 
+function update()
 {
     // Get map's bounds
     let bounds = map.getBounds();
