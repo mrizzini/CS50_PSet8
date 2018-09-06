@@ -38,7 +38,7 @@ $(document).ready(function() {
     // Options for map
     // https://developers.google.com/maps/documentation/javascript/reference#MapOptions
     let options = {
-        center: {lat: 37.4236, lng: -122.1619}, // Stanford, California
+        center: {lat: 41.8240, lng: -71.4128}, // Stanford, California
         disableDefaultUI: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         maxZoom: 14,
@@ -65,6 +65,25 @@ function addMarker(place)
 {
     // TODO
     // Ultimately, given a place (i.e., postal code and more), this function will need to add a marker (i.e., icon) to the map.
+    var myLatLng = {lat: place["latitude"], lng: place["longitude"]};
+    var marker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        title: 'Hello World!'
+    });
+    marker.addListener('click', function(){
+        // Get places within bounds (asynchronously)
+        let parameters = {
+            geo: place["postal_code"]
+        };
+
+        $.getJSON("/articles", parameters, function(data, textStatus, jqXHR) {
+
+            // Call typeahead's callback with search results (i.e., places)
+            showInfo(marker, data);
+        });
+    });
+    markers.push(marker);
 }
 
 
@@ -98,10 +117,7 @@ function configure()
         source: search,
         templates: {
             suggestion: Handlebars.compile(
-                "<div>" +
-                "TODO" +
-                "</div>"
-                // <div>{{place_name}}, {{admin_name1}}, {{postal_code}}</div>
+                "<div> {{ place_name }}, {{admin_name1}}, {{postal_code}}</div>"
             )
         }
     });
@@ -142,6 +158,14 @@ function removeMarkers()
 {
     // TODO
     // Ultimately, this function will need to remove any and all markers from the map!
+    // Implement removeMarkers in such a way that it removes all markers from the map (and deletes them).
+    // Odds are you’ll need addMarker to modify that global variable called markers in order for
+    // removeMarkers to work its own magic!
+    for (var i = 0; i < markers.length; i++)
+    {
+        markers[i].setMap(null);
+    }
+    markers = [];
 }
 
 
@@ -165,20 +189,26 @@ function showInfo(marker, content)
 {
     // Notice, though, how this function is creating a string of HTML dynamically, thereafter passing it to setContent.
     // Start div
-    let div = "<div id='info'>";
-    if (typeof(content) == "undefined")
+    let div = "<div id='info'><ul>";
+
+    for (let i = 0; i < 5; i++)
     {
-        // http://www.ajaxload.info/
-        div += "<img alt='loading' src='/static/ajax-loader.gif'/>";
-    }
-    else
-    {
-        div += content;
+
+        if (typeof(content) == "undefined")
+        {
+            // http://www.ajaxload.info/
+            div += "<img alt='loading' src='/static/ajax-loader.gif'/>";
+        }
+        else
+        {
+
+            div += "<li><a href=" + content[i]["link"] + " target='_blank'>" + content[i]["title"];
+        }
+        // End div
+        div += "</a></li>";
     }
 
-    // End div
-    div += "</div>";
-
+    div += "</ul></div>";
     // Set info window's content
     info.setContent(div);
 
@@ -212,4 +242,4 @@ function update()
            addMarker(data[i]);
        }
     });
-};
+}

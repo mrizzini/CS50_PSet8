@@ -35,13 +35,13 @@ def articles():
         raise RuntimeError("missing geo")
 
     geos = request.args.get("geo")
-    print("GEOS", geos)
+    # print("GEOS", geos)
 
     articles = lookup(geos)
-    print("ARTICLES", articles)
+    # print("ARTICLES", articles)
 
     # TODO
-    return jsonify([articles])
+    return jsonify([articles][0])
 
 
 @app.route("/search")
@@ -49,12 +49,10 @@ def search():
     """Search for places that match query"""
 
     q = request.args.get("q") + "%"
-    place = db.execute("SELECT * FROM places WHERE postal_code LIKE :q OR place_name LIKE :q OR admin_name1 LIKE :q", q=q) # OR place_name OR admin_name1 OR admin_code1
-    print("Q = ", q)
-    print("PLACE = ", place)
+    place = db.execute("SELECT * FROM places WHERE postal_code LIKE :q OR place_name LIKE :q OR admin_name1 LIKE :q", q=q)
 
     # TODO
-    return jsonify([place])
+    return jsonify([place][0])
 
 
 @app.route("/update")
